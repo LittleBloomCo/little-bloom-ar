@@ -2,8 +2,10 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
   <style>
     body {
       margin: 0;
@@ -11,6 +13,7 @@
     }
   </style>
 </head>
+
 <body>
 
 <a-scene
@@ -21,20 +24,24 @@
   device-orientation-permission-ui="enabled: false">
 
   <a-assets>
-    <img id="bee" src="bee.png">
-    <img id="flower" src="cornflower.png">
+    <img id="bee" src="bee.png" crossorigin="anonymous">
+    <img id="flower" src="cornflower.png" crossorigin="anonymous">
   </a-assets>
 
-  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <a-camera
+    position="0 0 0"
+    look-controls="enabled: false">
+  </a-camera>
 
   <a-entity mindar-image-target="targetIndex: 0">
 
-    <!-- Flower -->
+    <!-- CORNFLOWER -->
     <a-image
       src="#flower"
       position="0 -0.18 0.02"
       width="0.9"
       height="0.9"
+      material="shader: flat; transparent: true; alphaTest: 0.1;"
       animation__sway="
         property: rotation;
         from: 0 0 -2;
@@ -45,12 +52,13 @@
         easing: easeInOutSine;">
     </a-image>
 
-    <!-- Bee -->
+    <!-- BUMBLEBEE -->
     <a-image
       src="#bee"
       position="0 0.02 0.05"
       width="0.5"
       height="0.38"
+      material="shader: flat; transparent: true; alphaTest: 0.1;"
       animation__fly="
         property: position;
         from: 0 0.02 0.05;
@@ -69,16 +77,24 @@
         easing: easeInOutSine;">
     </a-image>
 
-    <!-- Fact text -->
+    <!-- FACT TEXT -->
+    <a-plane
+      position="0 -0.62 0.055"
+      width="1.05"
+      height="0.16"
+      material="color: #ffffff; opacity: 0.85; transparent: true;">
+    </a-plane>
+
     <a-text
       value="Cornflowers provide nectar for pollinators."
-      color="#ffffff"
+      color="#111111"
       align="center"
-      width="1.4"
+      width="1.2"
       position="0 -0.62 0.06">
     </a-text>
 
   </a-entity>
+
 </a-scene>
 
 </body>
