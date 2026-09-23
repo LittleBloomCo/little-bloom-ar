@@ -12,6 +12,106 @@
       overflow: hidden;
     }
   </style>
+
+  <script>
+    AFRAME.registerComponent('bee-flight', {
+      init: function () {
+        this.fact = document.querySelector('#factGroup');
+        this.pollen = document.querySelectorAll('.pollen');
+        this.startTime = null;
+      },
+
+      tick: function (time) {
+        if (!this.startTime) this.startTime = time;
+
+        const cycle = 12000;
+        const t = (time - this.startTime) % cycle;
+
+        let x = 0;
+        let y = 0.04;
+        let rot = 0;
+        let pollenOpacity = 0;
+        let factOpacity = 0;
+
+        // 0–2 sec: bee rests on flower
+        if (t < 2000) {
+          x = 0;
+          y = 0.04;
+          rot = -4;
+        }
+
+        // 2–5 sec: bee lifts off
+        else if (t < 5000) {
+          const p = (t - 2000) / 3000;
+
+          x = 0.28 * p;
+          y = 0.04 + (0.32 * p);
+
+          rot = -4 + (12 * p);
+        }
+
+        // 5–8 sec: bee hovers and collects pollen
+        else if (t < 8000) {
+          const p = (t - 5000) / 3000;
+
+          x = 0.28 + Math.sin(p * Math.PI * 2) * 0.08;
+          y = 0.36 + Math.sin(p * Math.PI) * 0.08;
+
+          rot = Math.sin(p * Math.PI * 4) * 7;
+
+          pollenOpacity = 1;
+        }
+
+        // 8–11 sec: bee returns to flower
+        else if (t < 11000) {
+          const p = (t - 8000) / 3000;
+
+          x = 0.28 * (1 - p);
+          y = 0.36 - (0.32 * p);
+
+          rot = 8 - (12 * p);
+
+          pollenOpacity = 1 - p;
+        }
+
+        // 11–12 sec: bee lands and fact appears
+        else {
+          x = 0;
+          y = 0.04;
+          rot = -4;
+
+          factOpacity = 1;
+        }
+
+        // Apply movement
+        this.el.setAttribute(
+          'position',
+          `${x} ${y} 0.08`
+        );
+
+        this.el.setAttribute(
+          'rotation',
+          `0 0 ${rot}`
+        );
+
+        // Pollen visibility
+        this.pollen.forEach(p => {
+          p.setAttribute(
+            'material',
+            `color: #FFD84D; opacity: ${pollenOpacity}; transparent: true`
+          );
+        });
+
+        // Fact visibility
+        if (this.fact) {
+          this.fact.setAttribute(
+            'visible',
+            factOpacity > 0
+          );
+        }
+      }
+    });
+  </script>
 </head>
 
 <body>
@@ -24,8 +124,8 @@
   device-orientation-permission-ui="enabled: false">
 
   <a-assets>
-    <img id="bee" src="bee.png" crossorigin="anonymous">
-    <img id="flower" src="cornflower.png" crossorigin="anonymous">
+    <img id="bee" src="bee.png">
+    <img id="flower" src="cornflower.png">
   </a-assets>
 
   <a-camera
@@ -44,54 +144,84 @@
       material="shader: flat; transparent: true; alphaTest: 0.1;"
       animation__sway="
         property: rotation;
-        from: 0 0 -2;
-        to: 0 0 2;
+        from: 0 0 -1.5;
+        to: 0 0 1.5;
         dur: 1800;
         dir: alternate;
         loop: true;
         easing: easeInOutSine;">
     </a-image>
 
-    <!-- BUMBLEBEE -->
-    <a-image
-      src="#bee"
-      position="0 0.02 0.05"
-      width="0.5"
-      height="0.38"
-      material="shader: flat; transparent: true; alphaTest: 0.1;"
-      animation__fly="
-        property: position;
-        from: 0 0.02 0.05;
-        to: 0.22 0.28 0.05;
-        dur: 2500;
-        dir: alternate;
-        loop: true;
-        easing: easeInOutSine;"
-      animation__tilt="
-        property: rotation;
-        from: 0 0 -8;
-        to: 0 0 8;
-        dur: 500;
-        dir: alternate;
-        loop: true;
-        easing: easeInOutSine;">
-    </a-image>
 
-    <!-- FACT TEXT -->
-    <a-plane
-      position="0 -0.62 0.055"
-      width="1.05"
-      height="0.16"
-      material="color: #ffffff; opacity: 0.85; transparent: true;">
-    </a-plane>
+    <!-- BEE RIG -->
+    <a-entity
+      id="beeRig"
+      bee-flight>
 
-    <a-text
-      value="Cornflowers provide nectar for pollinators."
-      color="#111111"
-      align="center"
-      width="1.2"
-      position="0 -0.62 0.06">
-    </a-text>
+      <a-image
+        src="#bee"
+        width="0.45"
+        height="0.34"
+        material="shader: flat; transparent: true; alphaTest: 0.1;">
+      </a-image>
+
+
+      <!-- POLLEN PARTICLES -->
+      <a-circle
+        class="pollen"
+        radius="0.018"
+        position="-0.09 -0.08 0.02"
+        material="color: #FFD84D; opacity: 0; transparent: true">
+      </a-circle>
+
+      <a-circle
+        class="pollen"
+        radius="0.014"
+        position="-0.04 -0.10 0.02"
+        material="color: #FFD84D; opacity: 0; transparent: true">
+      </a-circle>
+
+      <a-circle
+        class="pollen"
+        radius="0.012"
+        position="0.02 -0.09 0.02"
+        material="color: #FFD84D; opacity: 0; transparent: true">
+      </a-circle>
+
+      <a-circle
+        class="pollen"
+        radius="0.010"
+        position="0.08 -0.06 0.02"
+        material="color: #FFD84D; opacity: 0; transparent: true">
+      </a-circle>
+
+    </a-entity>
+
+
+    <!-- FACT PANEL -->
+    <a-entity
+      id="factGroup"
+      visible="false">
+
+      <a-plane
+        position="0 -0.62 0.07"
+        width="1.05"
+        height="0.20"
+        material="
+          color: #ffffff;
+          opacity: 0.88;
+          transparent: true;">
+      </a-plane>
+
+      <a-text
+        value="Cornflowers provide nectar for bees and other pollinators."
+        color="#111111"
+        align="center"
+        width="1.2"
+        position="0 -0.62 0.08">
+      </a-text>
+
+    </a-entity>
 
   </a-entity>
 
