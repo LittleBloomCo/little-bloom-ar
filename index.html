@@ -50,7 +50,7 @@
           rot = -4 + (12 * p);
         }
 
-        // 5–8 sec: bee hovers
+        // 5–8 sec: bee hovers and pollen builds
         else if (t < 8000) {
           const p = (t - 5000) / 3000;
 
@@ -59,10 +59,11 @@
 
           rot = Math.sin(p * Math.PI * 4) * 7;
 
-          pollenOpacity = 1;
+          // Gentle fade-in
+          pollenOpacity = Math.min(1, p * 2);
         }
 
-        // 8–11 sec: bee returns
+        // 8–11 sec: bee returns and pollen fades
         else if (t < 11000) {
           const p = (t - 8000) / 3000;
 
@@ -94,9 +95,11 @@
         );
 
         this.pollen.forEach(p => {
+          const colour = p.getAttribute('data-colour') || '#FFD54A';
+
           p.setAttribute(
             'material',
-            `color: #FFD84D; opacity: ${pollenOpacity}; transparent: true`
+            `color: ${colour}; opacity: ${pollenOpacity}; transparent: true`
           );
         });
 
@@ -160,33 +163,126 @@
       </a-image>
 
 
-      <!-- POLLEN PARTICLES -->
+      <!-- POLLEN CLOUD -->
+
       <a-circle
         class="pollen"
-        radius="0.009"
-        position="-0.08 -0.07 0.02"
-        material="color: #FFD84D; opacity: 0; transparent: true">
+        data-colour="#FFD54A"
+        radius="0.004"
+        position="-0.07 -0.055 0.025"
+        material="color: #FFD54A; opacity: 0; transparent: true"
+        animation="
+          property: position;
+          to: -0.08 -0.03 0.03;
+          dur: 700;
+          dir: alternate;
+          loop: true;
+          easing: easeInOutSine;">
       </a-circle>
 
       <a-circle
         class="pollen"
-        radius="0.008"
-        position="-0.04 -0.09 0.02"
-        material="color: #FFD84D; opacity: 0; transparent: true">
+        data-colour="#FFC928"
+        radius="0.003"
+        position="-0.045 -0.075 0.025"
+        material="color: #FFC928; opacity: 0; transparent: true"
+        animation="
+          property: position;
+          to: -0.03 -0.05 0.03;
+          dur: 900;
+          dir: alternate;
+          loop: true;
+          easing: easeInOutSine;">
       </a-circle>
 
       <a-circle
         class="pollen"
-        radius="0.007"
-        position="0.01 -0.08 0.02"
-        material="color: #FFD84D; opacity: 0; transparent: true">
+        data-colour="#FFE47A"
+        radius="0.005"
+        position="-0.015 -0.065 0.025"
+        material="color: #FFE47A; opacity: 0; transparent: true"
+        animation="
+          property: position;
+          to: 0.00 -0.04 0.03;
+          dur: 800;
+          dir: alternate;
+          loop: true;
+          easing: easeInOutSine;">
       </a-circle>
 
       <a-circle
         class="pollen"
-        radius="0.006"
-        position="0.06 -0.05 0.02"
-        material="color: #FFD84D; opacity: 0; transparent: true">
+        data-colour="#FFD12E"
+        radius="0.0035"
+        position="0.015 -0.08 0.025"
+        material="color: #FFD12E; opacity: 0; transparent: true"
+        animation="
+          property: position;
+          to: 0.025 -0.055 0.03;
+          dur: 1000;
+          dir: alternate;
+          loop: true;
+          easing: easeInOutSine;">
+      </a-circle>
+
+      <a-circle
+        class="pollen"
+        data-colour="#FFE066"
+        radius="0.004"
+        position="0.045 -0.065 0.025"
+        material="color: #FFE066; opacity: 0; transparent: true"
+        animation="
+          property: position;
+          to: 0.06 -0.04 0.03;
+          dur: 750;
+          dir: alternate;
+          loop: true;
+          easing: easeInOutSine;">
+      </a-circle>
+
+      <a-circle
+        class="pollen"
+        data-colour="#FFC400"
+        radius="0.0025"
+        position="0.07 -0.05 0.025"
+        material="color: #FFC400; opacity: 0; transparent: true"
+        animation="
+          property: position;
+          to: 0.08 -0.025 0.03;
+          dur: 850;
+          dir: alternate;
+          loop: true;
+          easing: easeInOutSine;">
+      </a-circle>
+
+      <a-circle
+        class="pollen"
+        data-colour="#FFDB4D"
+        radius="0.003"
+        position="-0.055 -0.035 0.025"
+        material="color: #FFDB4D; opacity: 0; transparent: true"
+        animation="
+          property: position;
+          to: -0.045 -0.015 0.03;
+          dur: 950;
+          dir: alternate;
+          loop: true;
+          easing: easeInOutSine;">
+      </a-circle>
+
+      <a-circle
+        class="pollen"
+        data-colour="#FFE680"
+        radius="0.0025"
+        position="0.035 -0.035 0.025"
+        material="color: #FFE680; opacity: 0; transparent: true"
+        animation="
+          property: position;
+          to: 0.045 -0.015 0.03;
+          dur: 650;
+          dir: alternate;
+          loop: true;
+          easing: easeInOutSine;">
       </a-circle>
 
     </a-entity>
