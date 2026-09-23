@@ -27,16 +27,16 @@
         const cycle = 12000;
         const t = (time - this.startTime) % cycle;
 
-        let x = 0;
-        let y = 0.04;
-        let rot = 0;
+        let x = -0.10;
+        let y = 0.00;
+        let rot = -4;
         let pollenOpacity = 0;
-        let factOpacity = 0;
+        let factVisible = false;
 
-        // 0–2 sec: bee rests on flower
+        // 0–2 sec: bee rests near the flower
         if (t < 2000) {
-          x = 0;
-          y = 0.04;
+          x = -0.10;
+          y = 0.00;
           rot = -4;
         }
 
@@ -44,30 +44,30 @@
         else if (t < 5000) {
           const p = (t - 2000) / 3000;
 
-          x = 0.28 * p;
-          y = 0.04 + (0.32 * p);
+          x = -0.10 + (0.32 * p);
+          y = 0.00 + (0.28 * p);
 
           rot = -4 + (12 * p);
         }
 
-        // 5–8 sec: bee hovers and collects pollen
+        // 5–8 sec: bee hovers
         else if (t < 8000) {
           const p = (t - 5000) / 3000;
 
-          x = 0.28 + Math.sin(p * Math.PI * 2) * 0.08;
-          y = 0.36 + Math.sin(p * Math.PI) * 0.08;
+          x = 0.22 + Math.sin(p * Math.PI * 2) * 0.07;
+          y = 0.28 + Math.sin(p * Math.PI) * 0.07;
 
           rot = Math.sin(p * Math.PI * 4) * 7;
 
           pollenOpacity = 1;
         }
 
-        // 8–11 sec: bee returns to flower
+        // 8–11 sec: bee returns
         else if (t < 11000) {
           const p = (t - 8000) / 3000;
 
-          x = 0.28 * (1 - p);
-          y = 0.36 - (0.32 * p);
+          x = -0.10 + (0.32 * (1 - p));
+          y = 0.28 - (0.28 * p);
 
           rot = 8 - (12 * p);
 
@@ -76,14 +76,13 @@
 
         // 11–12 sec: bee lands and fact appears
         else {
-          x = 0;
-          y = 0.04;
+          x = -0.10;
+          y = 0.00;
           rot = -4;
 
-          factOpacity = 1;
+          factVisible = true;
         }
 
-        // Apply movement
         this.el.setAttribute(
           'position',
           `${x} ${y} 0.08`
@@ -94,7 +93,6 @@
           `0 0 ${rot}`
         );
 
-        // Pollen visibility
         this.pollen.forEach(p => {
           p.setAttribute(
             'material',
@@ -102,12 +100,8 @@
           );
         });
 
-        // Fact visibility
         if (this.fact) {
-          this.fact.setAttribute(
-            'visible',
-            factOpacity > 0
-          );
+          this.fact.setAttribute('visible', factVisible);
         }
       }
     });
@@ -138,14 +132,14 @@
     <!-- CORNFLOWER -->
     <a-image
       src="#flower"
-      position="0 -0.18 0.02"
-      width="0.9"
-      height="0.9"
+      position="0 -0.11 0.02"
+      width="0.78"
+      height="0.78"
       material="shader: flat; transparent: true; alphaTest: 0.1;"
       animation__sway="
         property: rotation;
-        from: 0 0 -1.5;
-        to: 0 0 1.5;
+        from: 0 0 -1.2;
+        to: 0 0 1.2;
         dur: 1800;
         dir: alternate;
         loop: true;
@@ -160,8 +154,8 @@
 
       <a-image
         src="#bee"
-        width="0.45"
-        height="0.34"
+        width="0.42"
+        height="0.32"
         material="shader: flat; transparent: true; alphaTest: 0.1;">
       </a-image>
 
@@ -169,29 +163,29 @@
       <!-- POLLEN PARTICLES -->
       <a-circle
         class="pollen"
-        radius="0.018"
-        position="-0.09 -0.08 0.02"
+        radius="0.009"
+        position="-0.08 -0.07 0.02"
         material="color: #FFD84D; opacity: 0; transparent: true">
       </a-circle>
 
       <a-circle
         class="pollen"
-        radius="0.014"
-        position="-0.04 -0.10 0.02"
+        radius="0.008"
+        position="-0.04 -0.09 0.02"
         material="color: #FFD84D; opacity: 0; transparent: true">
       </a-circle>
 
       <a-circle
         class="pollen"
-        radius="0.012"
-        position="0.02 -0.09 0.02"
+        radius="0.007"
+        position="0.01 -0.08 0.02"
         material="color: #FFD84D; opacity: 0; transparent: true">
       </a-circle>
 
       <a-circle
         class="pollen"
-        radius="0.010"
-        position="0.08 -0.06 0.02"
+        radius="0.006"
+        position="0.06 -0.05 0.02"
         material="color: #FFD84D; opacity: 0; transparent: true">
       </a-circle>
 
@@ -204,9 +198,9 @@
       visible="false">
 
       <a-plane
-        position="0 -0.62 0.07"
-        width="1.05"
-        height="0.20"
+        position="0 -0.57 0.07"
+        width="1.00"
+        height="0.18"
         material="
           color: #ffffff;
           opacity: 0.88;
@@ -217,8 +211,8 @@
         value="Cornflowers provide nectar for bees and other pollinators."
         color="#111111"
         align="center"
-        width="1.2"
-        position="0 -0.62 0.08">
+        width="1.10"
+        position="0 -0.57 0.08">
       </a-text>
 
     </a-entity>
